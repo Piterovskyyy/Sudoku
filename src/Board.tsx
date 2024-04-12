@@ -1,30 +1,32 @@
 import { useState } from "react";
 import BoardCell from "./BoardCell";
 import ButtonNumber from "./ButtonNumber";
+import board from "./generateBoard";
 const Board = () => {
   const buttons = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-  const [sudokuBoard, setSudokuBoard] = useState([
-    [5, 3, "", "", 7, "", "", "", ""],
-    [6, "", "", 1, 9, 5, "", "", ""],
-    ["", 9, 8, "", "", "", "", 6, ""],
-    [8, "", "", "", 6, "", "", "", 3],
-    [4, "", "", 8, "", 3, "", "", 1],
-    [7, "", "", "", 2, "", "", "", 6],
-    ["", 6, "", "", "", "", 2, 8, ""],
-    ["", "", "", 4, 1, 9, "", "", 5],
-    ["", "", "", "", 8, "", "", 7, 9],
-  ]);
+  const [sudokuBoard, setSudokuBoard] =
+    useState<
+      { value: number | string; isError: boolean; isDefault: boolean }[][]
+    >(board);
   const [clickedCell, setClickedCell] = useState<{
     row: number | null;
     col: number | null;
-  }>({ row: null, col: null });
+    value: number | null;
+  }>({ row: null, col: null, value: null });
 
   const insertInCell = (value: number) => {
     setSudokuBoard((prevBoard) => {
-      if (clickedCell.col != null && clickedCell.row != null) {
+      if (
+        clickedCell.col != null &&
+        clickedCell.row != null &&
+        !prevBoard[clickedCell.row][clickedCell.col].isDefault
+      ) {
         const updatedBoard = [...prevBoard];
         updatedBoard[clickedCell.row] = [...updatedBoard[clickedCell.row]];
-        updatedBoard[clickedCell.row][clickedCell.col] = value;
+        updatedBoard[clickedCell.row][clickedCell.col].value = value;
+        setClickedCell((prevClickedCell) => {
+          return { ...prevClickedCell, value: value };
+        });
         return updatedBoard;
       }
       return prevBoard;
@@ -35,13 +37,12 @@ const Board = () => {
     <>
       <h1 className="text-xl font-bold text-center mb-4">Sudoku</h1>
       <div className="w-full md:w-1/2 mx-auto bg-white p-2 shadow-lg rounded-lg flex flex-col md:flex-row items-center justify-center">
-        <div className="grid grid-cols-9 justify-items-center border-2 border-black w-full md:w-96 h-96">
+        <div className="grid grid-cols-9 justify-items-center border-2 border-black w-full md:w-[400px] h-[400px]">
           {sudokuBoard.map((row, rowIndex) =>
-            // Mapujemy każdy wiersz w siatce sudoku
-            row.map((cellValue, colIndex) => (
+            row.map((cell, colIndex) => (
               <BoardCell
                 key={`${rowIndex}-${colIndex}`}
-                cellValue={cellValue}
+                cell={cell}
                 rowIndex={rowIndex}
                 colIndex={colIndex}
                 clickedCell={clickedCell}
