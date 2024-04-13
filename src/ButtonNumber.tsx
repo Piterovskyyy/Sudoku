@@ -6,7 +6,7 @@ const ButtonNumber: React.FC<{
 }> = ({ buttonValue, insertInCell }) => {
   return (
     <button
-      className="w-full bg-gray-200 rounded-md"
+      className="w-full bg-gray-200 rounded-md text-xl font-bold"
       onClick={() => {
         insertInCell(buttonValue);
       }}

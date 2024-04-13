@@ -1,10 +1,10 @@
-import Board from "./Board";
+import Game from "./Game";
 
 function App() {
   return (
     <>
       <div className="w-screen h-screen">
-        <Board />
+        <Game />
       </div>
     </>
   );

@@ -1,4 +1,5 @@
 import React, { Dispatch, SetStateAction } from "react";
+import locateClickedSquare from "./locateClickedSquare";
 
 const BoardCell: React.FC<{
   cell: { value: string | number; isDefault: boolean; isError: boolean };
@@ -12,41 +13,13 @@ const BoardCell: React.FC<{
       value: number | null;
     }>
   >;
-}> = ({ cell, rowIndex, colIndex, setClickedCell, clickedCell }) => {
-  const clickedSquare = {
-    rowStart:
-      clickedCell.row != null
-        ? clickedCell.row < 3
-          ? 0
-          : clickedCell.row < 6
-          ? 3
-          : 6
-        : 0,
-    rowEnd:
-      clickedCell.row != null
-        ? clickedCell.row < 3
-          ? 3
-          : clickedCell.row < 6
-          ? 6
-          : 9
-        : 0,
-    colStart:
-      clickedCell.col != null
-        ? clickedCell.col < 3
-          ? 0
-          : clickedCell.col < 6
-          ? 3
-          : 6
-        : 0,
-    colEnd:
-      clickedCell.col != null
-        ? clickedCell.col < 3
-          ? 3
-          : clickedCell.col < 6
-          ? 6
-          : 9
-        : 0,
+  errorCell: {
+    isError: boolean;
+    errorCellRow: number | null;
+    errorCellCol: number | null;
   };
+}> = ({ cell, rowIndex, colIndex, setClickedCell, clickedCell, errorCell }) => {
+  const clickedSquare = locateClickedSquare(clickedCell);
 
   const cellClasses =
     clickedCell.row == rowIndex && clickedCell.col == colIndex
@@ -58,18 +31,27 @@ const BoardCell: React.FC<{
           rowIndex < clickedSquare.rowEnd &&
           colIndex >= clickedSquare.colStart &&
           colIndex < clickedSquare.colEnd)
-      ? "bg-blue-100"
+      ? "bg-blue-100 "
       : cell.isDefault
-      ? "bg-gray-200"
-      : "bg-white";
+      ? "bg-gray-200 "
+      : " ";
 
   return (
     <div
       className={`cell border-gray-300 flex justify-center items-center w-full border h-full ${
-        colIndex === 2 || colIndex === 5 ? "border-r-2 border-r-black" : ""
+        colIndex === 2 || colIndex === 5 ? "border-r-2 border-r-black " : ""
       } ${
         rowIndex === 2 || rowIndex === 5 ? "border-b-2  border-b-black" : ""
-      } ${cellClasses} `}
+      } ${cellClasses} ${cell.isDefault ? "font-bold " : ""} ${
+        errorCell.isError
+          ? errorCell.errorCellRow == rowIndex &&
+            errorCell.errorCellCol == colIndex
+            ? "bg-red-600 text-white"
+            : cell.isError
+            ? "text-red-600 "
+            : ""
+          : ""
+      }`}
       onClick={() => {
         setClickedCell({ row: rowIndex, col: colIndex, value: +cell.value });
       }}

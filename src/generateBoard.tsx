@@ -1,59 +1,43 @@
 class Sudoku {
-  // Constructor
-  constructor(K) {
+  N: number;
+  K: number;
+  SRN: number;
+  board: SudokuCell[][];
+
+  constructor(K: number) {
     this.N = 9;
     this.K = K;
 
-    // Compute square root of N
-    const SRNd = Math.sqrt(this.N);
-    this.SRN = Math.floor(SRNd);
+    this.SRN = Math.floor(Math.sqrt(this.N));
 
-    // Initialize all entries as false to indicate
-    // that there are no edges initially
-    this.board = Array.from(
-      {
-        length: this.N,
-      },
-      () =>
-        Array.from(
-          {
-            length: this.N,
-          },
-          () => {
-            return {
-              value: "",
-              isDefault: false,
-              isError: false,
-            };
-          }
-        )
+    this.board = Array.from({ length: this.N }, () =>
+      Array.from({ length: this.N }, () => {
+        return {
+          value: "",
+          isDefault: false,
+          isError: false,
+        };
+      })
     );
   }
 
-  // Sudoku Generator
-  fillValues() {
-    // Fill the diagonal of SRN x SRN matrices
+  fillValues(): SudokuCell[][] {
     this.fillDiagonal();
 
-    // Fill remaining blocks
     this.fillRemaining(0, this.SRN);
 
-    // Remove Randomly K digits to make game
     this.removeKDigits();
 
     return this.board;
   }
 
-  // Fill the diagonal SRN number of SRN x SRN matrices
-  fillDiagonal() {
+  fillDiagonal(): void {
     for (let i = 0; i < this.N; i += this.SRN) {
-      // for diagonal box, start coordinates->i==j
       this.fillBox(i, i);
     }
   }
 
-  // Returns false if given 3 x 3 block contains num.
-  unUsedInBox(rowStart, colStart, num) {
+  unUsedInBox(rowStart: number, colStart: number, num: number): boolean {
     for (let i = 0; i < this.SRN; i++) {
       for (let j = 0; j < this.SRN; j++) {
         if (this.board[rowStart + i][colStart + j].value === num) {
@@ -64,11 +48,11 @@ class Sudoku {
     return true;
   }
 
-  // Fill a 3 x 3 matrix.
-  fillBox(row, col) {
+  fillBox(row: number, col: number): void {
     let num = 0;
     for (let i = 0; i < this.SRN; i++) {
       for (let j = 0; j < this.SRN; j++) {
+        // eslint-disable-next-line no-constant-condition
         while (true) {
           num = this.randomGenerator(this.N);
           if (this.unUsedInBox(row, col, num)) {
@@ -81,13 +65,11 @@ class Sudoku {
     }
   }
 
-  // Random generator
-  randomGenerator(num) {
+  randomGenerator(num: number): number {
     return Math.floor(Math.random() * num + 1);
   }
 
-  // Check if safe to put in cell
-  checkIfSafe(i, j, num) {
+  checkIfSafe(i: number, j: number, num: number): boolean {
     return (
       this.unUsedInRow(i, num) &&
       this.unUsedInCol(j, num) &&
@@ -95,8 +77,7 @@ class Sudoku {
     );
   }
 
-  // check in the row for existence
-  unUsedInRow(i, num) {
+  unUsedInRow(i: number, num: number): boolean {
     for (let j = 0; j < this.N; j++) {
       if (this.board[i][j].value === num) {
         return false;
@@ -105,8 +86,7 @@ class Sudoku {
     return true;
   }
 
-  // check in the row for existence
-  unUsedInCol(j, num) {
+  unUsedInCol(j: number, num: number): boolean {
     for (let i = 0; i < this.N; i++) {
       if (this.board[i][j].value === num) {
         return false;
@@ -115,26 +95,20 @@ class Sudoku {
     return true;
   }
 
-  // A recursive function to fill remaining
-  // matrix
-  fillRemaining(i, j) {
-    // Check if we have reached the end of the matrix
+  fillRemaining(i: number, j: number): boolean {
     if (i === this.N - 1 && j === this.N) {
       return true;
     }
 
-    // Move to the next row if we have reached the end of the current row
     if (j === this.N) {
       i += 1;
       j = 0;
     }
 
-    // Skip cells that are already filled
     if (this.board[i][j].value !== "") {
       return this.fillRemaining(i, j + 1);
     }
 
-    // Try filling the current cell with a valid value
     for (let num = 1; num <= this.N; num++) {
       if (this.checkIfSafe(i, j, num)) {
         this.board[i][j].value = num;
@@ -147,34 +121,28 @@ class Sudoku {
       }
     }
 
-    // No valid value was found, so backtrack
     return false;
   }
 
-  // Print sudoku
-
-  // Remove the K no. of digits to
-  // complete game
-  removeKDigits() {
+  removeKDigits(): void {
     let count = this.K;
 
     while (count !== 0) {
-      // extract coordinates i and j
-      let i = Math.floor(Math.random() * this.N);
-      let j = Math.floor(Math.random() * this.N);
-      if (this.board[i][j].value !== 0) {
+      const i = Math.floor(Math.random() * this.N);
+      const j = Math.floor(Math.random() * this.N);
+      if (this.board[i][j].value !== "") {
         count--;
         this.board[i][j].value = "";
         this.board[i][j].isDefault = false;
       }
     }
-
-    return;
   }
 }
 
-// Driver code
-let K = 80;
-let sudoku = new Sudoku(K);
-const board = sudoku.fillValues();
-export default board;
+interface SudokuCell {
+  value: number | string;
+  isDefault: boolean;
+  isError: boolean;
+}
+
+export default Sudoku;
