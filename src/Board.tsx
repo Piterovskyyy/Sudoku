@@ -3,10 +3,12 @@ import BoardCell from "./BoardCell";
 import ButtonNumber from "./ButtonNumber";
 import Sudoku from "./generateBoard";
 import checkBoardErrors from "./checkBoardErrors";
+import LevelsEnum from "./Levels";
 
 const Board: React.FC<{
   setLives: React.Dispatch<React.SetStateAction<number>>;
-}> = ({ setLives }) => {
+  level: string;
+}> = ({ setLives, level }) => {
   const buttons = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   const [sudokuBoard, setSudokuBoard] = useState<
     { value: number | string; isError: boolean; isDefault: boolean }[][]
@@ -27,15 +29,13 @@ const Board: React.FC<{
   }>({ row: null, col: null, value: null });
 
   useEffect(() => {
-    const K = 35;
-    const sudoku = new Sudoku(K);
+    const sudoku = new Sudoku(LevelsEnum[level as keyof typeof LevelsEnum]);
     const board = sudoku.fillValues();
     setSudokuBoard(board);
-  }, []);
+  }, [level]);
 
   useEffect(() => {
     if (error.isError) {
-      console.log(123);
       setLives((prevLives) => {
         const lives = prevLives - 1;
         if (lives === 0) {

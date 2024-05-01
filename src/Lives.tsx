@@ -3,7 +3,6 @@ import brokenheart from "./assets/brokenHeart.png";
 
 const Lives: React.FC<{ lives: number }> = ({ lives }) => {
   let divContent;
-  console.log(lives);
   if (lives === 3) {
     divContent = (
       <>
