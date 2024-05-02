@@ -14,9 +14,9 @@ const Board: React.FC<{
   const [sudokuBoard, setSudokuBoard] = useState<
     { value: number | string; isError: boolean; isDefault: boolean }[][]
   >([]);
-  const [completedBoard, setCompletedBoard] = useState<
-    { value: number | string; isError: boolean; isDefault: boolean }[][]
-  >([]);
+  // const [completedBoard, setCompletedBoard] = useState<
+  //   { value: number | string; isError: boolean; isDefault: boolean }[][]
+  // >([]);
   const [error, setError] = useState<{
     isError: boolean;
     errorCellRow: number | null;
@@ -34,7 +34,7 @@ const Board: React.FC<{
 
   useEffect(() => {
     const sudoku = new Sudoku(LevelsEnum[level as keyof typeof LevelsEnum]);
-    setCompletedBoard(sudoku.fillValues());
+    // setCompletedBoard(sudoku.fillValues());
     const board = sudoku.removeKDigits();
     setSudokuBoard(board);
   }, [level]);
