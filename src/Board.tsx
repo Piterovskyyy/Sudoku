@@ -34,6 +34,7 @@ const Board: React.FC<{
 
   useEffect(() => {
     const sudoku = new Sudoku(LevelsEnum[level as keyof typeof LevelsEnum]);
+    sudoku.fillValues();
     // setCompletedBoard(sudoku.fillValues());
     const board = sudoku.removeKDigits();
     setSudokuBoard(board);
