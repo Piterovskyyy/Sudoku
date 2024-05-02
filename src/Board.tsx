@@ -7,10 +7,14 @@ import LevelsEnum from "./Levels";
 
 const Board: React.FC<{
   setLives: React.Dispatch<React.SetStateAction<number>>;
+  setIsGameOver: React.Dispatch<React.SetStateAction<boolean>>;
   level: string;
-}> = ({ setLives, level }) => {
+}> = ({ setLives, level, setIsGameOver }) => {
   const buttons = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   const [sudokuBoard, setSudokuBoard] = useState<
+    { value: number | string; isError: boolean; isDefault: boolean }[][]
+  >([]);
+  const [completedBoard, setCompletedBoard] = useState<
     { value: number | string; isError: boolean; isDefault: boolean }[][]
   >([]);
   const [error, setError] = useState<{
@@ -30,7 +34,8 @@ const Board: React.FC<{
 
   useEffect(() => {
     const sudoku = new Sudoku(LevelsEnum[level as keyof typeof LevelsEnum]);
-    const board = sudoku.fillValues();
+    setCompletedBoard(sudoku.fillValues());
+    const board = sudoku.removeKDigits();
     setSudokuBoard(board);
   }, [level]);
 
@@ -39,13 +44,13 @@ const Board: React.FC<{
       setLives((prevLives) => {
         const lives = prevLives - 1;
         if (lives === 0) {
-          // setGameOver(true);
+          setIsGameOver(true);
         }
 
         return lives;
       });
     }
-  }, [error, setLives]);
+  }, [error, setLives, setIsGameOver]);
 
   const insertInCell = (value: number) => {
     setSudokuBoard((prevBoard) => {

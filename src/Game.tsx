@@ -4,17 +4,34 @@ import Lives from "./Lives";
 const Game: React.FC<{
   level: string;
   setGameStarted: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ level, setGameStarted }) => {
+  gameOver: (result: "WON" | "LOST", time: string, lives: number) => void;
+}> = ({ level, setGameStarted, gameOver }) => {
   const [lives, setLives] = useState(3);
   const [time, setTime] = useState(0);
-
+  const [isGameOver, setIsGameOver] = useState(false);
   useEffect(() => {
     const intervalId = setInterval(() => setTime(time + 1), 10);
+    if (isGameOver) {
+      clearInterval(intervalId);
+    }
+
     return () => clearInterval(intervalId);
-  }, [time]);
+  }, [time, isGameOver]);
+
   const hours = Math.floor(time / 360000);
   const minutes = Math.floor((time % 360000) / 6000);
   const seconds = Math.floor((time % 6000) / 100);
+
+  if (isGameOver) {
+    const time = `${hours ? `${hours} : ` : ""}${minutes
+      .toString()
+      .padStart(2, "0")} : ${seconds.toString().padStart(2, "0")}`;
+    if (lives == 0) {
+      gameOver("LOST", time, lives);
+    } else {
+      gameOver("WON", time, lives);
+    }
+  }
 
   return (
     <>
@@ -33,7 +50,11 @@ const Game: React.FC<{
         <Lives lives={lives} />
       </div>
       <div className="w-full p-2 rounded-lg flex flex-col md:flex-row items-center justify-center">
-        <Board setLives={setLives} level={level} />
+        <Board
+          setLives={setLives}
+          level={level}
+          setIsGameOver={setIsGameOver}
+        />
       </div>
     </>
   );

@@ -26,8 +26,6 @@ class Sudoku {
 
     this.fillRemaining(0, this.SRN);
 
-    this.removeKDigits();
-
     return this.board;
   }
 
@@ -124,7 +122,7 @@ class Sudoku {
     return false;
   }
 
-  removeKDigits(): void {
+  removeKDigits(): SudokuCell[][] {
     let count = this.K;
 
     while (count !== 0) {
@@ -136,6 +134,8 @@ class Sudoku {
         this.board[i][j].isDefault = false;
       }
     }
+
+    return this.board;
   }
 }
 
