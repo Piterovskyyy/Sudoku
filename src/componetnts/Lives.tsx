@@ -1,5 +1,5 @@
-import heart from "./assets/heart.png";
-import brokenheart from "./assets/brokenHeart.png";
+import heart from "../assets/heart.png";
+import brokenheart from "../assets/brokenHeart.png";
 
 const Lives: React.FC<{ lives: number }> = ({ lives }) => {
   let divContent;

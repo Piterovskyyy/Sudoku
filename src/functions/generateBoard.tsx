@@ -26,7 +26,13 @@ class Sudoku {
 
     this.fillRemaining(0, this.SRN);
 
-    return this.board;
+    const copy = this.board.map((row) =>
+      row.map((cell) => {
+        return { ...cell };
+      })
+    );
+
+    return copy;
   }
 
   fillDiagonal(): void {

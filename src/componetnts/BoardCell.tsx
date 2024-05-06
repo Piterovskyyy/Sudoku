@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from "react";
-import locateClickedSquare from "./locateClickedSquare";
+import locateClickedSquare from "../functions/locateClickedSquare";
 
 const BoardCell: React.FC<{
   cell: { value: string | number; isDefault: boolean; isError: boolean };

@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import BoardCell from "./BoardCell";
 import ButtonNumber from "./ButtonNumber";
-import Sudoku from "./generateBoard";
-import checkBoardErrors from "./checkBoardErrors";
+import Sudoku from "../functions/generateBoard";
+import checkBoardErrors from "../functions/checkBoardErrors";
 import LevelsEnum from "./Levels";
+import BoardContext from "../Store/BoardContext";
 
 const Board: React.FC<{
   setLives: React.Dispatch<React.SetStateAction<number>>;
@@ -14,9 +15,8 @@ const Board: React.FC<{
   const [sudokuBoard, setSudokuBoard] = useState<
     { value: number | string; isError: boolean; isDefault: boolean }[][]
   >([]);
-  // const [completedBoard, setCompletedBoard] = useState<
-  //   { value: number | string; isError: boolean; isDefault: boolean }[][]
-  // >([]);
+  const boardContext = useContext(BoardContext);
+
   const [error, setError] = useState<{
     isError: boolean;
     errorCellRow: number | null;
@@ -34,11 +34,12 @@ const Board: React.FC<{
 
   useEffect(() => {
     const sudoku = new Sudoku(LevelsEnum[level as keyof typeof LevelsEnum]);
-    sudoku.fillValues();
-    // setCompletedBoard(sudoku.fillValues());
+    boardContext.setBoard(sudoku.fillValues());
+
     const board = sudoku.removeKDigits();
     setSudokuBoard(board);
-  }, [level]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [level, boardContext.setBoard]);
 
   useEffect(() => {
     if (error.isError) {
