@@ -42,6 +42,32 @@ const Board: React.FC<{
   }, [level, boardContext.setBoard]);
 
   useEffect(() => {
+    let gameFinish = true;
+    if (sudokuBoard.length == 0) {
+      return;
+    }
+    for (let i = 0; i < 9; i++) {
+      for (let j = 0; j < 9; j++) {
+        if (sudokuBoard[i][j].value == "" || sudokuBoard[i][j].isError) {
+          console.log(321);
+          gameFinish = false;
+          break;
+        }
+      }
+      if (!gameFinish) {
+        break;
+      }
+    }
+
+    if (gameFinish) {
+      boardContext.setBoard(sudokuBoard);
+      setIsGameOver(true);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [boardContext.setBoard, setIsGameOver, sudokuBoard]);
+
+  useEffect(() => {
     if (error.isError) {
       setLives((prevLives) => {
         const lives = prevLives - 1;

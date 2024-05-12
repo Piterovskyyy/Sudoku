@@ -13,7 +13,14 @@ function App() {
   >([]);
 
   const gameOver = (result: "WON" | "LOST", time: string, lives: number) => {
-    setGameResult(<Result result={result} time={time} lives={lives} />);
+    setGameResult(
+      <Result
+        result={result}
+        time={time}
+        lives={lives}
+        setIsGameOver={setIsGameOver}
+      />
+    );
     setIsGameOver(true);
     setGameStarted(false);
   };

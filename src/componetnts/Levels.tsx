@@ -1,5 +1,5 @@
 enum LevelsEnum {
-  Beginner = 30,
+  Beginner = 2,
   Easy = 38,
   Medium = 46,
   Hard = 54,
